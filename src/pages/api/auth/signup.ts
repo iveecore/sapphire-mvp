@@ -3,9 +3,17 @@ import { z } from 'zod'
 import { createSupabaseAnonClient, createSupabaseServiceClient } from '@/lib/supabase/server'
 import { formatZodError, signupSchema } from '@/lib/validation/auth'
 import { setSessionCookie } from '@/lib/auth/session'
+import { rateLimit, getClientIp } from '@/lib/security/rateLimit'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
+
+  const ip = getClientIp(req)
+  const { allowed, retryAfter } = rateLimit(`signup:${ip}`, { windowMs: 3_600_000, max: 5 })
+  if (!allowed) {
+    res.setHeader('Retry-After', retryAfter)
+    return res.status(429).json({ error: 'Too many signup attempts. Try again later.' })
+  }
 
   try {
     const { email, password, fullName } = signupSchema.parse(req.body)
