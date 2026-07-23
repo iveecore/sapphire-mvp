@@ -140,9 +140,10 @@ export function scoreOutfitMatch(
     score += dna.stylePersonality.occasionPreferences[outfit.occasion] * 10
   }
 
-  if (outfit.style) {
+  const outfitStyle = outfit.style
+  if (outfitStyle) {
     const isPreferred = dna.stylePersonality.archetypes.some(a =>
-      a.toLowerCase() === outfit.style.toLowerCase()
+      a.toLowerCase() === outfitStyle.toLowerCase()
     )
     if (isPreferred) score += 20
   }

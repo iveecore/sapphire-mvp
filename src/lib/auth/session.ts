@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { encodeSessionValue, decodeSessionValue } from './session-crypto.mjs'
 
 const SESSION_COOKIE = 'ivee_session'
 
-function encode(value: string) {
-  return Buffer.from(value, 'utf8').toString('base64url')
-}
-
-function decode(value: string) {
-  return Buffer.from(value, 'base64url').toString('utf8')
+function requireEnv(name: string) {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+  return value
 }
 
 export type AppSession = {
@@ -18,29 +19,26 @@ export type AppSession = {
 }
 
 export function serializeSession(session: AppSession) {
-  return encode(JSON.stringify(session))
+  return encodeSessionValue(session, requireEnv('SESSION_SECRET'))
 }
 
 export function readSessionCookie(req: NextApiRequest): AppSession | null {
   const raw = req.cookies?.[SESSION_COOKIE]
   if (!raw) return null
 
-  try {
-    return JSON.parse(decode(raw)) as AppSession
-  } catch {
-    return null
-  }
+  return decodeSessionValue(raw, requireEnv('SESSION_SECRET')) as AppSession | null
 }
 
 export function setSessionCookie(res: NextApiResponse, session: AppSession) {
   const value = serializeSession(session)
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
   res.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=${value}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${60 * 60 * 24 * 7}`
+    `${SESSION_COOKIE}=${value}; HttpOnly; Path=/; SameSite=Lax${secure}; Max-Age=${60 * 60 * 24 * 7}`
   )
 }
 
 export function clearSessionCookie(res: NextApiResponse) {
-  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`)
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
+  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; Path=/; SameSite=Lax${secure}; Max-Age=0`)
 }
-

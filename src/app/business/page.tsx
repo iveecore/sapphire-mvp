@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react'
 import { ArrowRight, BarChart3, Building2, Factory, Network, ShieldCheck, Store, Users } from 'lucide-react'
 import { partnerSegments } from '@/lib/platform/catalog'
 
@@ -6,6 +7,20 @@ const flow = [
   ['Sapphire', 'Personalized demand and trust layer'],
   ['Partner', 'Brand, retailer, creator, factory'],
   ['Outcome', 'Better match, fewer returns, higher loyalty']
+]
+
+const partnerSystems: Array<{ icon: LucideIcon; label: string }> = [
+  { icon: Store, label: 'Retail partners' },
+  { icon: Building2, label: 'Brand portals' },
+  { icon: Users, label: 'Creator commerce' },
+  { icon: Factory, label: 'Factory signals' }
+]
+
+const trustControls: Array<{ icon: LucideIcon; label: string }> = [
+  { icon: ShieldCheck, label: 'Permissioned data' },
+  { icon: Network, label: 'Aggregated signals' },
+  { icon: BarChart3, label: 'Explainable metrics' },
+  { icon: Store, label: 'Partner-safe APIs' }
 ]
 
 export default function BusinessPage() {
@@ -33,12 +48,7 @@ export default function BusinessPage() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                [Store, 'Retail partners'],
-                [Building2, 'Brand portals'],
-                [Users, 'Creator commerce'],
-                [Factory, 'Factory signals']
-              ].map(([IconComp, label]) => (
+              {partnerSystems.map(({ icon: IconComp, label }) => (
                 <div key={label} className="rounded-[1.5rem] border border-black/5 bg-white/75 p-5">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1a1626] text-white">
                     <IconComp size={18} />
@@ -105,12 +115,7 @@ export default function BusinessPage() {
             <div className="micro-label">Controls</div>
             <h2 className="mt-3 text-2xl font-bold text-[#1a1626]">Why this can be trusted</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {[
-                [ShieldCheck, 'Permissioned data'],
-                [Network, 'Aggregated signals'],
-                [BarChart3, 'Explainable metrics'],
-                [Store, 'Partner-safe APIs']
-              ].map(([IconComp, label]) => (
+              {trustControls.map(({ icon: IconComp, label }) => (
                 <div key={label} className="rounded-[1.4rem] bg-[#fcfbfa] p-4">
                   <IconComp size={18} className="text-[#7a4cf5]" />
                   <div className="mt-4 text-sm font-bold text-[#1a1626]">{label}</div>
@@ -123,4 +128,3 @@ export default function BusinessPage() {
     </div>
   )
 }
-

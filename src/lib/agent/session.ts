@@ -51,26 +51,21 @@ export async function createAgentSession(userId: string): Promise<AgentSession> 
 export async function getAgentSession(userId: string, sessionId?: string): Promise<AgentSession | null> {
   const supabase = createSupabaseServiceClient()
 
-  let query = supabase
-    .from('agent_sessions')
-    .select('*')
-    .eq('user_id', userId)
-    .is('ended_at', null)
-    .order('started_at', { ascending: false })
-    .limit(1)
-
-  if (sessionId) {
-    query = supabase
+  const result = sessionId
+    ? await supabase
       .from('agent_sessions')
       .select('*')
       .eq('id', sessionId)
       .eq('user_id', userId)
       .maybeSingle()
-  }
-
-  const result = sessionId
-    ? await query
-    : await query
+    : await supabase
+      .from('agent_sessions')
+      .select('*')
+      .eq('user_id', userId)
+      .is('ended_at', null)
+      .order('started_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
 
   const session = result.data
   if (!session) return null

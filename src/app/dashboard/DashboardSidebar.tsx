@@ -16,7 +16,7 @@ const NAV = [
 ]
 
 export default function DashboardSidebar() {
-  const path = usePathname()
+  const path = usePathname() ?? ''
   return (
     <>
       {/* Sidebar */}
