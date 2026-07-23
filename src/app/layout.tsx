@@ -62,47 +62,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <header className="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur-xl">
-          <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-3 group">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7a4cf5] to-[#f472b6] text-white shadow-lg shadow-[#7a4cf5]/20 transition-all duration-300 group-hover:shadow-[#7a4cf5]/40 group-hover:scale-105">
-                <Gem size={18} />
+        <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#080610]/80 backdrop-blur-xl">
+          <nav className="max-w-7xl mx-auto px-6 sm:px-12 py-4 flex items-center justify-between gap-4">
+            <a href="/" className="flex items-center gap-2.5 group">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#c084fc] to-[#f472b6]">
+                <Gem size={14} className="text-white" />
               </div>
               <div>
-                <div className="text-[10px] font-bold tracking-[0.22em] uppercase text-[#7a4cf5]">IVEE</div>
-                <div className="text-[17px] font-bold text-[#1f1f26] leading-none">Sapphire</div>
+                <div className="text-[0.58rem] font-bold tracking-[0.24em] uppercase text-white/30">IVEE</div>
+                <div className="text-[15px] font-bold text-white leading-none">Sapphire</div>
               </div>
             </a>
 
-            {/* Nav links */}
-            <div className="hidden sm:flex items-center gap-1 text-sm">
-              <a href="/vision" className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[#4a4654] hover:bg-[#7a4cf5]/8 hover:text-[#7a4cf5] transition-all duration-200 font-medium">
-                ✦ Vision
-              </a>
-              <a href="/pricing" className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[#4a4654] hover:bg-[#7a4cf5]/8 hover:text-[#7a4cf5] transition-all duration-200 font-medium">
-                <Tag size={14} /> Pricing
-              </a>
-              <a href="/dashboard" className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[#4a4654] hover:bg-[#7a4cf5]/8 hover:text-[#7a4cf5] transition-all duration-200 font-medium">
-                <LayoutDashboard size={14} /> Dashboard
-              </a>
-              <a href="/profile" className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[#4a4654] hover:bg-[#7a4cf5]/8 hover:text-[#7a4cf5] transition-all duration-200 font-medium">
-                <UserCircle2 size={14} /> Profile
-              </a>
-              <a href="/account" className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[#4a4654] hover:bg-[#7a4cf5]/8 hover:text-[#7a4cf5] transition-all duration-200 font-medium">
-                <ShieldCheck size={14} /> Trust
-              </a>
+            <div className="hidden sm:flex items-center gap-6 text-xs font-medium text-white/35">
+              <a href="/vision" className="hover:text-white/70 transition">Vision</a>
+              <a href="/pricing" className="hover:text-white/70 transition">Pricing</a>
+              <a href="/dashboard" className="hover:text-white/70 transition">Dashboard</a>
+              <a href="/profile" className="hover:text-white/70 transition">Profile</a>
             </div>
 
-            {/* CTA */}
             <a
               href="/signup"
-              className="rounded-full bg-gradient-to-r from-[#7a4cf5] to-[#f472b6] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#7a4cf5]/25 hover:shadow-[#7a4cf5]/40 hover:-translate-y-0.5 transition-all duration-200"
+              className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition"
             >
-              Get started ✦
+              Get started
             </a>
           </nav>
         </header>
+        <div className="h-[57px]" />
         <main className="min-h-screen">{children}</main>
       </body>
     </html>
