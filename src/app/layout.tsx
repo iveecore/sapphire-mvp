@@ -62,28 +62,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#080610]/80 backdrop-blur-xl">
+        <header className="fixed top-0 left-0 right-0 z-50" style={{borderBottom:'1px solid #F0E0E8', background:'rgba(254,250,246,0.88)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)'}}>
           <nav className="max-w-7xl mx-auto px-6 sm:px-12 py-4 flex items-center justify-between gap-4">
             <a href="/" className="flex items-center gap-2.5 group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#c084fc] to-[#f472b6]">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl" style={{background:'linear-gradient(135deg,#E8608A,#F4A4C0)'}}>
                 <Gem size={14} className="text-white" />
               </div>
               <div>
-                <div className="text-[0.58rem] font-bold tracking-[0.24em] uppercase text-white/30">IVEE</div>
-                <div className="text-[15px] font-bold text-white leading-none">Sapphire</div>
+                <div className="text-[0.58rem] font-bold tracking-[0.24em] uppercase" style={{color:'#C4A08C'}}>IVEE</div>
+                <div className="text-[15px] font-bold leading-none" style={{color:'#1a0f14'}}>Sapphire</div>
               </div>
             </a>
 
-            <div className="hidden sm:flex items-center gap-6 text-xs font-medium text-white/35">
-              <a href="/vision" className="hover:text-white/70 transition">Vision</a>
-              <a href="/pricing" className="hover:text-white/70 transition">Pricing</a>
-              <a href="/dashboard" className="hover:text-white/70 transition">Dashboard</a>
-              <a href="/profile" className="hover:text-white/70 transition">Profile</a>
+            <div className="hidden sm:flex items-center gap-6 text-xs font-medium" style={{color:'#B07888'}}>
+              <a href="/vision" className="transition hover:opacity-70">Vision</a>
+              <a href="/pricing" className="transition hover:opacity-70">Pricing</a>
+              <a href="/dashboard" className="transition hover:opacity-70">Dashboard</a>
+              <a href="/profile" className="transition hover:opacity-70">Profile</a>
             </div>
 
             <a
               href="/signup"
-              className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition"
+              className="rounded-full px-5 py-2 text-xs font-semibold text-white transition"
+              style={{background:'#E8608A', boxShadow:'0 4px 16px rgba(232,96,138,0.2)'}}
             >
               Get started
             </a>

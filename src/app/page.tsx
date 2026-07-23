@@ -11,13 +11,13 @@ const STATS = [
 
 const REVIEWS = [
   { name: 'Layla K.', handle: '@laylak', vibe: 'Office Siren', text: 'Sapphire found me the perfect business casual fit in 30 seconds. My manager asked where I shop now.', avatar: 'L' },
-  { name: 'Zoe M.', handle: '@zoemiller', vibe: 'Dark Feminine', text: 'I uploaded my whole wardrobe and it styled me better than Pinterest ever did. Main character unlocked.', avatar: 'Z' },
+  { name: 'Zoe M.', handle: '@zoemiller', vibe: 'Dark Feminine', text: 'I uploaded my whole wardrobe and it styled me better than Pinterest ever did.', avatar: 'Z' },
   { name: 'Amara J.', handle: '@amaraj', vibe: 'Coastal Girl', text: 'The fit-aware thing is real. Finally an app that gets that a size 8 looks different on everyone.', avatar: 'A' },
 ]
 
 const STEPS = [
-  { n: '01', title: 'Take the quiz', body: 'Five questions about your vibe, your body, your life. Takes two minutes. Changes how you get dressed.' },
-  { n: '02', title: 'Upload your wardrobe', body: 'Photograph what you own. Sapphire finds the gaps, surfaces the hidden gems, builds your signature look.' },
+  { n: '01', title: 'Take the quiz', body: 'Five questions about your vibe, your body, your life. Two minutes. Changes how you get dressed.' },
+  { n: '02', title: 'Upload your wardrobe', body: 'Photograph what you own. Sapphire finds the gaps, surfaces hidden gems, builds your signature look.' },
   { n: '03', title: 'Get dressed with AI', body: 'A curated outfit every morning — calibrated to the weather, the occasion, the version of you showing up today.' },
 ]
 
@@ -29,47 +29,55 @@ export default function Home() {
   const [joined, setJoined] = useState(false)
 
   return (
-    <div className="bg-[#080610] text-white overflow-x-hidden">
+    <div style={{background:'#FEFAF6'}} className="text-[#1a0f14] overflow-x-hidden">
 
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex flex-col justify-end pb-24 overflow-hidden">
+
+        {/* Video backdrop */}
         <video
           src={VIDEO_URL}
           autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-35"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{opacity: 0.15}}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080610] via-[#080610]/55 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#080610]/60 via-transparent to-transparent" />
+        {/* Warm overlay */}
+        <div className="absolute inset-0" style={{background:'linear-gradient(to top, #FEFAF6 35%, rgba(254,250,246,0.7) 65%, rgba(254,250,246,0.2) 100%)'}} />
+        <div className="absolute inset-0" style={{background:'linear-gradient(to right, rgba(254,250,246,0.8) 40%, transparent 100%)'}} />
 
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/8 bg-white/4 backdrop-blur-sm px-4 py-1.5 text-[0.65rem] font-semibold text-white/40 tracking-[0.18em] uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        {/* Beta pill */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border px-4 py-1.5 text-[0.62rem] font-semibold tracking-[0.18em] uppercase" style={{borderColor:'#E8A0B4', background:'#FFF0F4', color:'#C45C7A'}}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{background:'#E8608A'}} />
           Beta — 2,400 women already inside
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 sm:px-12 w-full">
-          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/30 mb-6">Sapphire</p>
-          <h1 className="display-serif font-black leading-[0.9] text-white mb-8" style={{fontSize:'clamp(3.8rem,10vw,8.5rem)'}}>
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-6" style={{color:'#C4A08C'}}>Sapphire by IVEE</p>
+
+          <h1 className="display-serif font-black leading-[0.9] mb-8" style={{fontSize:'clamp(3.8rem,10vw,8.5rem)', color:'#1a0f14'}}>
             Dress like<br/>
-            <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+            <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
               you mean it.
             </span>
           </h1>
-          <p className="text-base sm:text-lg text-white/45 leading-8 max-w-lg mb-10 font-light">
+
+          <p className="text-base sm:text-lg leading-8 max-w-lg mb-10 font-light" style={{color:'#8B6E7A'}}>
             An AI stylist that understands your body, your wardrobe, and your aesthetic — not a recommendation engine serving someone else&apos;s inventory.
           </p>
 
+          {/* Vibe selector */}
           <div className="mb-10">
-            <p className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">Your vibe</p>
+            <p className="text-[0.6rem] font-bold uppercase tracking-[0.2em] mb-3" style={{color:'#C4A08C'}}>Your vibe</p>
             <div className="flex flex-wrap gap-2">
               {VIBES.map(v => (
                 <button
                   key={v}
                   onClick={() => setActiveVibe(v)}
-                  className={`rounded-full px-4 py-1.5 text-xs font-medium border transition-all ${
-                    activeVibe === v
-                      ? 'bg-[#c084fc]/15 border-[#c084fc]/50 text-[#c084fc]'
-                      : 'bg-transparent border-white/8 text-white/35 hover:border-white/20 hover:text-white/60'
-                  }`}
+                  className="rounded-full px-4 py-1.5 text-xs font-medium border transition-all"
+                  style={activeVibe === v
+                    ? {background:'#E8608A', borderColor:'#E8608A', color:'#fff'}
+                    : {background:'#FFF0F4', borderColor:'#F0D0DC', color:'#C45C7A'}
+                  }
                 >
                   {v}
                 </button>
@@ -78,82 +86,83 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <a href="/signup" className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#080610] hover:bg-white/90 transition-all shadow-2xl shadow-white/5">
+            <a href="/signup" className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition-all shadow-lg" style={{background:'#E8608A', boxShadow:'0 8px 30px rgba(232,96,138,0.25)'}}>
               Start free
             </a>
-            <a href="/pricing" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-7 py-3.5 text-sm font-medium text-white/45 hover:text-white/70 hover:border-white/20 transition-all">
+            <a href="/pricing" className="inline-flex items-center gap-2 rounded-full border px-7 py-3.5 text-sm font-medium transition-all" style={{borderColor:'#E8C4D0', color:'#B07088', background:'#FFF7F9'}}>
               See pricing
             </a>
           </div>
         </div>
 
-        <div className="absolute bottom-10 right-12 hidden lg:flex flex-col items-center gap-2 text-white/15">
-          <div className="w-px h-12 bg-gradient-to-b from-transparent to-white/15" />
-          <span className="text-[0.6rem] tracking-[0.2em] uppercase rotate-0">Scroll</span>
+        <div className="absolute bottom-10 right-12 hidden lg:flex flex-col items-center gap-2" style={{color:'#D4B0BC'}}>
+          <div className="w-px h-12" style={{background:'linear-gradient(to bottom, transparent, #D4B0BC)'}} />
+          <span className="text-[0.6rem] tracking-[0.2em] uppercase">Scroll</span>
         </div>
       </section>
 
       {/* ── STATS ── */}
-      <section className="border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-16 grid sm:grid-cols-3 sm:divide-x divide-white/5">
-          {STATS.map(s => (
-            <div key={s.label} className="py-10 sm:py-0 sm:px-14 first:pl-0 last:pr-0">
-              <div
-                className="text-5xl sm:text-6xl font-black tracking-tight"
-                style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}
-              >
+      <section style={{borderTop:'1px solid #F0E0E8'}}>
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 py-16 grid sm:grid-cols-3" style={{borderBottom: 'none'}}>
+          {STATS.map((s, i) => (
+            <div
+              key={s.label}
+              className="py-10 sm:py-0 sm:px-14 first:pl-0 last:pr-0"
+              style={i < 2 ? {borderRight:'1px solid #F0E0E8'} : {}}
+            >
+              <div className="text-5xl sm:text-6xl font-black tracking-tight" style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
                 {s.value}
               </div>
-              <div className="text-sm text-white/30 mt-2 font-light">{s.label}</div>
+              <div className="text-sm mt-2 font-light" style={{color:'#A08090'}}>{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── FILM ── */}
+      {/* ── BRAND FILM ── */}
       <section className="py-28 max-w-7xl mx-auto px-6 sm:px-12">
         <div className="flex items-end justify-between mb-10 gap-6">
           <div>
-            <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/25 mb-3">The vision</p>
-            <h2 className="display-serif text-4xl sm:text-[3.25rem] font-black text-white leading-[0.95]">
+            <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-3" style={{color:'#C4A08C'}}>The vision</p>
+            <h2 className="display-serif font-black leading-[0.95]" style={{fontSize:'clamp(2.2rem,5vw,3.5rem)', color:'#1a0f14'}}>
               Style, reimagined<br/>
-              <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+              <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
                 by intelligence.
               </span>
             </h2>
           </div>
-          <a href="/signup" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-white/30 hover:text-white/60 transition">
-            Get started <span>→</span>
+          <a href="/signup" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 text-sm font-medium transition" style={{color:'#C4A08C'}}>
+            Get started →
           </a>
         </div>
 
-        <div className="relative rounded-[1.75rem] overflow-hidden bg-black aspect-video">
+        <div className="relative rounded-[1.75rem] overflow-hidden aspect-video shadow-2xl" style={{background:'#F5E8EE', boxShadow:'0 40px 80px rgba(232,96,138,0.12)'}}>
           <video src={VIDEO_URL} autoPlay muted loop playsInline className="w-full h-full object-cover" />
-          <div className="absolute inset-0 ring-1 ring-inset ring-white/5 rounded-[1.75rem]" />
-          <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-full bg-black/60 backdrop-blur border border-white/8 px-3.5 py-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#c084fc] animate-pulse" />
-            <span className="text-[0.65rem] font-semibold text-white/70 tracking-wide">Sapphire — AI style OS</span>
+          <div className="absolute inset-0 rounded-[1.75rem]" style={{boxShadow:'inset 0 0 0 1px rgba(232,96,138,0.1)'}} />
+          <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-full px-3.5 py-1.5 backdrop-blur-sm" style={{background:'rgba(255,240,244,0.85)', border:'1px solid rgba(232,96,138,0.15)'}}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{background:'#E8608A'}} />
+            <span className="text-[0.65rem] font-semibold tracking-wide" style={{color:'#C45C7A'}}>Sapphire — AI style OS</span>
           </div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="border-t border-white/5 py-28">
+      <section className="py-28" style={{background:'#FDF5EE', borderTop:'1px solid #F0E0D8', borderBottom:'1px solid #F0E0D8'}}>
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
-          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/25 mb-4">How it works</p>
-          <h2 className="display-serif text-4xl sm:text-[3.25rem] font-black text-white leading-[0.95] mb-20 max-w-lg">
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-4" style={{color:'#C4A08C'}}>How it works</p>
+          <h2 className="display-serif font-black leading-[0.95] mb-20 max-w-lg" style={{fontSize:'clamp(2.2rem,5vw,3.5rem)', color:'#1a0f14'}}>
             Three steps to your<br/>
-            <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+            <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
               signature look.
             </span>
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-px bg-white/[0.04] rounded-[1.5rem] overflow-hidden">
+          <div className="grid md:grid-cols-3 gap-4">
             {STEPS.map(s => (
-              <div key={s.n} className="bg-[#080610] p-9 sm:p-11 group hover:bg-white/[0.025] transition-colors">
-                <div className="text-[0.6rem] font-black uppercase tracking-[0.22em] text-white/15 mb-8">{s.n}</div>
-                <h3 className="text-lg font-semibold text-white mb-3">{s.title}</h3>
-                <p className="text-sm leading-[1.85] text-white/35 font-light">{s.body}</p>
+              <div key={s.n} className="rounded-[1.5rem] p-9 transition-all" style={{background:'#FEFAF6', border:'1px solid #F0E0D8'}}>
+                <div className="text-[0.6rem] font-black uppercase tracking-[0.22em] mb-8" style={{color:'#D4B8C4'}}>{s.n}</div>
+                <h3 className="text-lg font-semibold mb-3" style={{color:'#1a0f14'}}>{s.title}</h3>
+                <p className="text-sm leading-[1.85] font-light" style={{color:'#9A7A88'}}>{s.body}</p>
               </div>
             ))}
           </div>
@@ -161,31 +170,31 @@ export default function Home() {
       </section>
 
       {/* ── REVIEWS ── */}
-      <section className="py-28" style={{background:'#0a0714'}}>
+      <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
-          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/25 mb-4">What women say</p>
-          <h2 className="display-serif text-4xl sm:text-[3.25rem] font-black text-white leading-[0.95] mb-16">
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-4" style={{color:'#C4A08C'}}>What women say</p>
+          <h2 className="display-serif font-black leading-[0.95] mb-16" style={{fontSize:'clamp(2.2rem,5vw,3.5rem)', color:'#1a0f14'}}>
             Honest words.<br/>
-            <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+            <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
               Real closets.
             </span>
           </h2>
 
           <div className="grid md:grid-cols-3 gap-4">
             {REVIEWS.map(r => (
-              <div key={r.handle} className="rounded-[1.5rem] border border-white/[0.06] bg-white/[0.025] p-7 hover:bg-white/[0.045] transition-colors">
+              <div key={r.handle} className="rounded-[1.5rem] p-7 transition-all" style={{background:'#FFF7F9', border:'1px solid #F0D8E4'}}>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-800 to-pink-800 flex items-center justify-center text-xs font-bold text-white">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{background:'linear-gradient(135deg,#E8608A,#F4A4C0)'}}>
                     {r.avatar}
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-white">{r.name}</div>
-                    <div className="text-xs text-white/25">{r.handle}</div>
+                    <div className="text-sm font-semibold" style={{color:'#1a0f14'}}>{r.name}</div>
+                    <div className="text-xs" style={{color:'#C4A0B4'}}>{r.handle}</div>
                   </div>
-                  <span className="ml-auto text-[0.65rem] font-medium text-[#c084fc]/70 bg-[#c084fc]/8 px-2.5 py-0.5 rounded-full border border-[#c084fc]/10">{r.vibe}</span>
+                  <span className="ml-auto text-[0.65rem] font-medium px-2.5 py-0.5 rounded-full" style={{background:'#FFF0F4', color:'#E8608A', border:'1px solid #F0D0DC'}}>{r.vibe}</span>
                 </div>
-                <p className="text-sm leading-[1.9] text-white/45 font-light">&ldquo;{r.text}&rdquo;</p>
-                <div className="mt-5 text-[0.6rem] text-yellow-400/40 tracking-widest">★★★★★</div>
+                <p className="text-sm leading-[1.9] font-light" style={{color:'#7A5A68'}}>&ldquo;{r.text}&rdquo;</p>
+                <div className="mt-5 text-[0.6rem] tracking-widest" style={{color:'#E8B090'}}>★★★★★</div>
               </div>
             ))}
           </div>
@@ -194,38 +203,38 @@ export default function Home() {
 
       {/* ── UPLOAD ── */}
       <section className="py-28 max-w-7xl mx-auto px-6 sm:px-12">
-        <div className="rounded-[2rem] border border-white/[0.06] overflow-hidden" style={{background:'linear-gradient(135deg,#12062a,#0d0618,#080610)'}}>
+        <div className="rounded-[2rem] overflow-hidden" style={{background:'linear-gradient(135deg,#FFF0F4,#FDF5EE,#FEFAF6)', border:'1px solid #F0D8E4'}}>
           <div className="p-10 sm:p-16 grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/25 mb-4">New feature</p>
-              <h2 className="display-serif text-4xl sm:text-5xl font-black text-white mb-5 leading-[0.95]">
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-4" style={{color:'#C4A08C'}}>New feature</p>
+              <h2 className="display-serif font-black leading-[0.95] mb-5" style={{fontSize:'clamp(2rem,4.5vw,3rem)', color:'#1a0f14'}}>
                 Upload.<br/>Style.<br/>
-                <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+                <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
                   Repeat.
                 </span>
               </h2>
-              <p className="text-white/35 leading-[1.85] mb-8 text-sm font-light">
+              <p className="leading-[1.85] mb-8 text-sm font-light" style={{color:'#9A7A88'}}>
                 Photograph anything in your wardrobe. Sapphire identifies it, catalogs it, and starts building complete outfits around it within seconds.
               </p>
-              <a href="/signup" className="inline-flex items-center gap-2 rounded-full bg-[#c084fc] px-6 py-3 text-sm font-semibold text-white hover:bg-[#a855f7] transition shadow-lg shadow-purple-500/15">
+              <a href="/signup" className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition shadow-lg" style={{background:'#E8608A', boxShadow:'0 8px 24px rgba(232,96,138,0.2)'}}>
                 Try it free
               </a>
             </div>
 
-            <div className="rounded-[1.5rem] border border-white/[0.06] bg-white/[0.02] p-5">
-              <div className="rounded-[1.1rem] border border-dashed border-white/8 p-10 text-center hover:border-white/15 transition">
-                <div className="text-4xl mb-4 grayscale opacity-50">📷</div>
-                <div className="text-white/50 font-medium mb-1 text-sm">Drop a photo here</div>
-                <div className="text-white/20 text-xs mb-5">JPG, PNG or HEIC</div>
-                <button className="rounded-full border border-white/8 bg-white/5 px-5 py-2 text-xs font-medium text-white/35 hover:bg-white/8 transition">
+            <div className="rounded-[1.5rem] p-5" style={{background:'rgba(255,255,255,0.7)', border:'1px solid #F0D8E4'}}>
+              <div className="rounded-[1.1rem] p-10 text-center transition" style={{border:'2px dashed #F0C8D8'}}>
+                <div className="text-4xl mb-4 opacity-40">📷</div>
+                <div className="text-sm font-medium mb-1" style={{color:'#B07888'}}>Drop a photo here</div>
+                <div className="text-xs mb-5" style={{color:'#C4A0B4'}}>JPG, PNG or HEIC</div>
+                <button className="rounded-full px-5 py-2 text-xs font-medium transition" style={{background:'#FFF0F4', border:'1px solid #F0C8D8', color:'#C45C7A'}}>
                   Browse files
                 </button>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-2">
                 {['Dress', 'Heels', 'Jacket'].map((label, i) => (
-                  <div key={i} className="rounded-xl bg-white/[0.03] border border-white/[0.04] p-3 text-center">
-                    <div className="h-8 rounded-md bg-white/5 mb-2" />
-                    <div className="text-[0.6rem] text-white/20 font-medium">{label}</div>
+                  <div key={i} className="rounded-xl p-3 text-center" style={{background:'#FFF7F9', border:'1px solid #F0D8E4'}}>
+                    <div className="h-8 rounded-md mb-2" style={{background:'#F5E0E8'}} />
+                    <div className="text-[0.6rem] font-medium" style={{color:'#C4A0B4'}}>{label}</div>
                   </div>
                 ))}
               </div>
@@ -235,23 +244,23 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-36 text-center px-6 border-t border-white/5">
-        <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-white/20 mb-8">Join the movement</p>
+      <section className="py-36 text-center px-6" style={{borderTop:'1px solid #F0E0E8'}}>
+        <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] mb-8" style={{color:'#C4A08C'}}>Join the movement</p>
         <h2
-          className="display-serif font-black text-white leading-[0.9] mb-8"
-          style={{fontSize:'clamp(2.8rem,8vw,6.5rem)'}}
+          className="display-serif font-black leading-[0.9] mb-8"
+          style={{fontSize:'clamp(2.8rem,8vw,6.5rem)', color:'#1a0f14'}}
         >
           Your style era<br/>
-          <span style={{background:'linear-gradient(125deg,#c084fc 30%,#f472b6)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
+          <span style={{background:'linear-gradient(125deg,#E8608A 20%,#F4A4C0)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text'}}>
             starts now.
           </span>
         </h2>
-        <p className="text-white/30 mb-10 text-sm max-w-sm mx-auto leading-[1.85] font-light">
+        <p className="mb-10 text-sm max-w-sm mx-auto leading-[1.85] font-light" style={{color:'#9A7A88'}}>
           No algorithms selling you things. No generic advice. Just your style, finally figured out.
         </p>
 
         {joined ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/8 px-6 py-3 text-sm font-medium text-emerald-400/80">
+          <div className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium" style={{background:'#F0FFF4', border:'1px solid #A8D8B0', color:'#4A9A60'}}>
             You&apos;re in — we&apos;ll be in touch.
           </div>
         ) : (
@@ -265,24 +274,26 @@ export default function Home() {
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
-              className="flex-1 rounded-full border border-white/8 bg-white/[0.04] px-5 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#c084fc]/30 focus:border-[#c084fc]/30"
+              className="flex-1 rounded-full px-5 py-3 text-sm focus:outline-none"
+              style={{border:'1px solid #F0C8D8', background:'#FFF7F9', color:'#1a0f14'}}
             />
             <button
               type="submit"
-              className="rounded-full bg-[#c084fc] px-6 py-3 text-sm font-semibold text-white hover:bg-[#a855f7] transition whitespace-nowrap"
+              className="rounded-full px-6 py-3 text-sm font-semibold text-white whitespace-nowrap transition"
+              style={{background:'#E8608A', boxShadow:'0 8px 24px rgba(232,96,138,0.2)'}}
             >
               Get early access
             </button>
           </form>
         )}
 
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-[0.6rem] text-white/15 font-medium uppercase tracking-[0.18em]">
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-[0.6rem] font-medium uppercase tracking-[0.18em]" style={{color:'#D4B0BC'}}>
           <span>Free forever</span>
-          <span className="w-0.5 h-0.5 rounded-full bg-white/10" />
+          <span className="w-0.5 h-0.5 rounded-full" style={{background:'#D4B0BC'}} />
           <span>No card required</span>
-          <span className="w-0.5 h-0.5 rounded-full bg-white/10" />
+          <span className="w-0.5 h-0.5 rounded-full" style={{background:'#D4B0BC'}} />
           <span>Your data stays yours</span>
-          <span className="w-0.5 h-0.5 rounded-full bg-white/10" />
+          <span className="w-0.5 h-0.5 rounded-full" style={{background:'#D4B0BC'}} />
           <span>Built for women</span>
         </div>
       </section>
