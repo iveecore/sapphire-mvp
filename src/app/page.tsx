@@ -116,24 +116,42 @@ export default function Home() {
         <div className="panel rounded-[2rem] p-5 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="micro-label">Built from the boards</div>
-              <h2 className="mt-3 text-2xl font-semibold text-[#1f1f26]">The product should feel like the system you shared.</h2>
+              <div className="micro-label">How it works</div>
+              <h2 className="mt-3 text-2xl font-semibold text-[#1f1f26]">Three steps to a wardrobe that actually fits your life.</h2>
             </div>
-            <a href="/vision" className="rounded-full bg-[#1f1f26] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d2838]">
-              View full vision
+            <a href="/signup" className="rounded-full bg-[#1f1f26] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2d2838]">
+              Get started
             </a>
           </div>
 
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
             {[
-              ['/design/home-board.png', 'Product journeys and mobile surface'],
-              ['/design/ivoe-architecture-board.png', 'Identity, trust, memory, and decision architecture']
-            ].map(([src, caption]) => (
-              <div key={caption} className="rounded-[1.6rem] overflow-hidden border border-black/5 bg-[#0f0b18]">
-                <img src={src} alt={caption} className="block h-auto w-full object-cover" />
-                <div className="bg-white px-4 py-3 text-sm text-[#6d6875]">{caption}</div>
+              { step: '01', title: 'Build your style profile', body: 'Answer a short quiz about your lifestyle, body fit, and aesthetic. Sapphire uses this to calibrate every recommendation.' },
+              { step: '02', title: 'Add your wardrobe', body: 'Log what you already own. Sapphire learns what you reach for, what sits unused, and why.' },
+              { step: '03', title: 'Get daily recommendations', body: 'Each morning, Sapphire surfaces outfit ideas tailored to your day — weather, occasion, and confidence level.' }
+            ].map(({ step, title, body }) => (
+              <div key={step} className="rounded-[1.6rem] border border-black/5 bg-gradient-to-br from-[#f9f7ff] to-white p-6">
+                <div className="text-4xl font-bold text-[#7a4cf5]/20">{step}</div>
+                <div className="mt-3 text-base font-semibold text-[#1f1f26]">{title}</div>
+                <p className="mt-2 text-sm leading-6 text-[#6d6875]">{body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 pb-20 sm:pb-28">
+        <div className="rounded-[2rem] bg-[#1f1f26] p-8 sm:p-12 text-center text-white">
+          <div className="micro-label text-white/50">Private by design</div>
+          <h2 className="mt-4 text-3xl sm:text-4xl font-semibold">Your style data belongs to you.</h2>
+          <p className="mt-4 max-w-xl mx-auto text-white/65 leading-7">No ads. No selling your data. Full audit log of every recommendation, permission you granted, and action taken on your behalf.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a href="/signup" className="rounded-full bg-[#7a4cf5] px-6 py-3 text-sm font-semibold text-white hover:bg-[#6b3ee8] transition">
+              Start free
+            </a>
+            <a href="/dashboard" className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/15 transition">
+              See demo
+            </a>
           </div>
         </div>
       </section>
