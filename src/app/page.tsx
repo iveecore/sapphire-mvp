@@ -172,6 +172,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── BRAND FILM ── */}
+      <section className="max-w-5xl mx-auto px-4 pb-20">
+        <div className="text-center mb-8">
+          <div className="micro-label mb-3">The vision</div>
+          <h2 className="display-serif text-4xl sm:text-5xl font-black text-[#1a1626]">
+            Style, reimagined<br/><span className="gradient-text">by AI.</span>
+          </h2>
+        </div>
+        <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl shadow-purple-200/40 bg-[#0d0910]">
+          <video
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_3FpPG77mOlFwZqVLNywPP5PQusd/hf_20260723_221932_5339be84-ea0c-4e05-a5a8-7900573dc52a.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full aspect-video object-cover"
+          />
+          <div className="absolute inset-0 rounded-[2.5rem] ring-1 ring-inset ring-white/10 pointer-events-none" />
+          <div className="absolute bottom-6 left-6 glass rounded-2xl px-4 py-2.5 backdrop-blur-md">
+            <div className="text-xs font-bold text-white/90">✦ Sapphire — your AI style OS</div>
+          </div>
+        </div>
+      </section>
+
       {/* ── HOW IT WORKS ── */}
       <section className="max-w-7xl mx-auto px-4 pb-20">
         <div className="text-center mb-12">
