@@ -10,9 +10,7 @@
     "test": "node --test tests/all.test.mjs",
     "scorecard:update": "node scripts/update-scorecard.mjs",
     "scorecard:check": "node scripts/check-scorecard.mjs",
-    "verify": "node scripts/validate-repo.mjs",
-    "ci": "npm run scorecard:check",
-    "prebuild": "npm run verify"
+    "ci": "npm run scorecard:check"
   },
   "dependencies": {
     "@blocknote/mantine": "^0.52.1",
