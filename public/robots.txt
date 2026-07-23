@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /quiz
+Disallow: /account
+
+Sitemap: https://sapphire-mvp.vercel.app/sitemap.xml

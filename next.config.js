@@ -23,13 +23,19 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: *.supabase.co images.unsplash.com",
+              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+              "img-src 'self' data: blob: *.supabase.co images.unsplash.com *.lottiefiles.com",
               "connect-src 'self' *.supabase.co",
-              "font-src 'self'",
+              "font-src 'self' fonts.gstatic.com fonts.googleapis.com",
               "frame-ancestors 'none'"
             ].join('; ')
           }
+        ]
+      },
+      {
+        source: '/(.*)\.(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
         ]
       }
     ]
