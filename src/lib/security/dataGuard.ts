@@ -25,7 +25,7 @@ const STRIPPED_FIELDS = new Set([
 
 // Strip sensitive fields from any object deeply
 export function sanitizeOutput<T extends Record<string, unknown>>(obj: T): T {
-  const result = { ...obj }
+  const result: Record<string, unknown> = { ...obj }
   for (const key of Object.keys(result)) {
     if (STRIPPED_FIELDS.has(key.toLowerCase())) {
       delete result[key]
@@ -33,7 +33,7 @@ export function sanitizeOutput<T extends Record<string, unknown>>(obj: T): T {
       result[key] = sanitizeOutput(result[key] as Record<string, unknown>)
     }
   }
-  return result
+  return result as T
 }
 
 export function sanitizeRows<T extends Record<string, unknown>>(rows: T[]): T[] {
@@ -62,7 +62,7 @@ export async function secureRead<T extends Record<string, unknown>>(
   if (error) throw new Error(`secureRead error on ${table}: ${error.message}`)
 
   // Verify every row belongs to this user — double-check beyond RLS
-  const rows = (data ?? []) as T[]
+  const rows = (data ?? []) as unknown as T[]
   for (const row of rows) {
     if ('user_id' in row && row.user_id !== userId) {
       // Log the anomaly and block
