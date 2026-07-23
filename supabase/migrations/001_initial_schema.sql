@@ -4,14 +4,101 @@ create table users (
   email text unique not null,
   full_name text,
   avatar_url text,
+  auth_user_id uuid unique,
+  onboarding_status text default 'draft',
   created_at timestamp default now(),
   updated_at timestamp default now()
+);
+
+-- Core platform identity
+create table identities (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  identity_type text not null default 'person',
+  display_name text,
+  status text not null default 'active',
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null unique,
+  status text not null default 'draft',
+  bio text,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table privacy_settings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null unique,
+  allow_personalization boolean default true,
+  allow_community_visibility boolean default false,
+  allow_marketing_emails boolean default false,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table permissions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  resource_type text not null,
+  resource_id text,
+  action text not null,
+  allowed boolean default true,
+  reason text,
+  created_at timestamp default now()
+);
+
+create table audit_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  event_type text not null,
+  metadata jsonb default '{}'::jsonb,
+  created_at timestamp default now()
+);
+
+create table memory_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  memory_type text not null,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamp default now()
+);
+
+create table contexts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  context_type text not null,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamp default now()
+);
+
+create table objects (
+  id uuid primary key default gen_random_uuid(),
+  object_type text not null,
+  owner_user_id uuid references users(id) on delete cascade,
+  name text not null,
+  metadata jsonb default '{}'::jsonb,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table object_relationships (
+  id uuid primary key default gen_random_uuid(),
+  source_object_id uuid references objects(id) on delete cascade not null,
+  target_object_id uuid references objects(id) on delete cascade not null,
+  relationship_type text not null,
+  created_at timestamp default now()
 );
 
 -- Style Profiles
 create table style_profiles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references users(id) on delete cascade not null,
+  status text default 'draft',
+  style_vibe text,
   style_score int default 0,
   body_type text,
   colors text[],
@@ -19,6 +106,45 @@ create table style_profiles (
   lifestyle text,
   created_at timestamp default now(),
   updated_at timestamp default now()
+);
+
+create table style_answers (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  question_id text not null,
+  question text not null,
+  answer text not null,
+  created_at timestamp default now()
+);
+
+create table wardrobe_items (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  name text not null,
+  category text not null,
+  color text,
+  occasion text,
+  confidence_score int default 50,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table outfits (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  name text not null,
+  source text default 'generated',
+  confidence_score int default 50,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table outfit_items (
+  id uuid primary key default gen_random_uuid(),
+  outfit_id uuid references outfits(id) on delete cascade not null,
+  wardrobe_item_id uuid references wardrobe_items(id) on delete cascade not null,
+  position int default 0,
+  created_at timestamp default now()
 );
 
 -- Products
@@ -33,12 +159,40 @@ create table products (
 );
 
 -- Recommendations
+create table recommendation_runs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  context jsonb default '{}'::jsonb,
+  created_at timestamp default now()
+);
+
 create table recommendations (
   id uuid primary key default gen_random_uuid(),
+  recommendation_run_id uuid references recommendation_runs(id) on delete cascade,
   user_id uuid references users(id) on delete cascade not null,
   product_id uuid references products(id) on delete cascade not null,
   score decimal(3,2),
   feedback text,
+  created_at timestamp default now()
+);
+
+create table recommendation_items (
+  id uuid primary key default gen_random_uuid(),
+  recommendation_run_id uuid references recommendation_runs(id) on delete cascade not null,
+  object_id uuid references objects(id) on delete cascade,
+  name text not null,
+  score int not null,
+  reason text not null,
+  tags text[] default '{}',
+  created_at timestamp default now()
+);
+
+create table feedback_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null,
+  recommendation_id uuid references recommendation_items(id) on delete cascade,
+  outcome text not null,
+  note text,
   created_at timestamp default now()
 );
 
@@ -62,15 +216,62 @@ create table achievements (
 
 -- Row-Level Security
 alter table users enable row level security;
+alter table identities enable row level security;
+alter table profiles enable row level security;
+alter table privacy_settings enable row level security;
+alter table permissions enable row level security;
+alter table audit_events enable row level security;
+alter table memory_events enable row level security;
+alter table contexts enable row level security;
+alter table objects enable row level security;
+alter table object_relationships enable row level security;
 alter table style_profiles enable row level security;
+alter table style_answers enable row level security;
+alter table wardrobe_items enable row level security;
+alter table outfits enable row level security;
+alter table outfit_items enable row level security;
 alter table recommendations enable row level security;
+alter table recommendation_runs enable row level security;
+alter table recommendation_items enable row level security;
+alter table feedback_events enable row level security;
 alter table community_posts enable row level security;
 alter table achievements enable row level security;
 
 -- Users can only see their own data
 create policy "Users can see own data" on users for all using (auth.uid() = id);
+create policy "Users can see own identities" on identities for all using (auth.uid() = user_id);
+create policy "Users can see own profiles" on profiles for all using (auth.uid() = user_id);
+create policy "Users can see own privacy settings" on privacy_settings for all using (auth.uid() = user_id);
+create policy "Users can see own permissions" on permissions for all using (auth.uid() = user_id);
+create policy "Users can see own audit events" on audit_events for all using (auth.uid() = user_id);
+create policy "Users can see own memory events" on memory_events for all using (auth.uid() = user_id);
+create policy "Users can see own contexts" on contexts for all using (auth.uid() = user_id);
+create policy "Users can see own objects" on objects for all using (auth.uid() = owner_user_id);
+create policy "Users can see own object relationships" on object_relationships for all using (
+  exists (
+    select 1 from objects o
+    where o.id = source_object_id and o.owner_user_id = auth.uid()
+  )
+);
 create policy "Users can see own profiles" on style_profiles for all using (auth.uid() = user_id);
+create policy "Users can see own answers" on style_answers for all using (auth.uid() = user_id);
+create policy "Users can see own wardrobe" on wardrobe_items for all using (auth.uid() = user_id);
+create policy "Users can see own outfits" on outfits for all using (auth.uid() = user_id);
+create policy "Users can see own outfit items" on outfit_items for all using (
+  exists (
+    select 1 from outfits o
+    where o.id = outfit_id and o.user_id = auth.uid()
+  )
+);
 create policy "Users can see own recommendations" on recommendations for all using (auth.uid() = user_id);
+create policy "Users can see own recommendation runs" on recommendation_runs for all using (auth.uid() = user_id);
+create policy "Users can see own recommendation items" on recommendation_items for all using (
+  exists (
+    select 1 from recommendation_runs r
+    where r.id = recommendation_run_id and r.user_id = auth.uid()
+  )
+);
+create policy "Users can see own feedback events" on feedback_events for all using (auth.uid() = user_id);
 create policy "Users can see own achievements" on achievements for all using (auth.uid() = user_id);
 
 -- Public can see community posts

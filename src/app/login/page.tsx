@@ -4,22 +4,29 @@ import { useState } from 'react'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     setLoading(true)
+
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       })
+      const payload = await res.json()
+
       if (res.ok) {
-        window.location.href = '/dashboard'
+        window.location.href = payload.next ?? '/dashboard'
       } else {
-        alert('Login failed')
+        setError(payload.error ?? 'Login failed. Please try again.')
       }
+    } catch {
+      setError('Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -50,11 +57,17 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Your password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               required
             />
           </div>
+
+          {error && (
+            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
