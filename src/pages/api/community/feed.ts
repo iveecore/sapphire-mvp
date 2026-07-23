@@ -1,15 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { createSupabaseAnonClient } from '@/lib/supabase/server'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return res.status(405).end()
 
   try {
+    const supabase = createSupabaseAnonClient()
     const { data, error } = await supabase
       .from('community_posts')
       .select('*')
