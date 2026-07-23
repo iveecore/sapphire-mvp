@@ -1,21 +1,28 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createSupabaseServiceClient } from '@/lib/supabase/server'
+import { z } from 'zod'
 import { readSessionCookie } from '@/lib/auth/session'
+import { createSupabaseServiceClient } from '@/lib/supabase/server'
 import { buildRecommendationItems } from '@/lib/platform/scoring'
 import type { StyleAnswer } from '@/lib/platform/types'
 
+const schema = z.object({
+  regenerate: z.boolean().optional().default(false)
+})
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
+
   const session = readSessionCookie(req)
   if (!session) return res.status(401).json({ error: 'Not authenticated' })
 
   try {
+    schema.parse(req.body)
     const supabase = createSupabaseServiceClient()
     const userId = session.userId
 
     const [{ data: answers }, { data: wardrobe }] = await Promise.all([
       supabase.from('style_answers').select('*').eq('user_id', userId),
-      supabase.from('wardrobe_items').select('*').eq('user_id', userId)
+      supabase.from('wardrobe_items').select('*').eq('user_id', userId).limit(20)
     ])
 
     const { data: bodyProfile } = await supabase.from('body_profiles').select('*').eq('user_id', userId).maybeSingle()
@@ -26,23 +33,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       answer: item.answer
     }))
 
-    const recommendations = buildRecommendationItems(typedAnswers, wardrobe ?? [], bodyProfile?.body_type ?? null)
-
     const run = await supabase
       .from('recommendation_runs')
       .insert({
         user_id: userId,
-        context: { source: 'manual-generate', wardrobeCount: wardrobe?.length ?? 0, answerCount: typedAnswers.length }
+        context: {
+          wardrobeCount: wardrobe?.length ?? 0,
+          answerCount: typedAnswers.length,
+          bodyType: bodyProfile?.body_type ?? null
+        }
       })
       .select('*')
       .single()
 
-    if (run.error || !run.data) {
-      return res.status(400).json({ error: run.error?.message ?? 'Could not create recommendation run.' })
-    }
+    if (run.error || !run.data) return res.status(400).json({ error: run.error?.message ?? 'Could not create recommendation run.' })
 
-    const { data, error } = await supabase.from('recommendation_items').insert(
-      recommendations.map((item) => ({
+    const items = buildRecommendationItems(typedAnswers, wardrobe ?? [], bodyProfile?.body_type ?? null)
+
+    const inserted = await supabase.from('recommendation_items').insert(
+      items.map((item) => ({
         recommendation_run_id: run.data.id,
         name: item.name,
         score: item.score,
@@ -51,16 +60,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }))
     ).select('*')
 
-    if (error) return res.status(400).json({ error: error.message })
-
     await supabase.from('audit_events').insert({
       user_id: userId,
       event_type: 'recommendation.run_created',
-      metadata: { recommendation_run_id: run.data.id, source: 'manual-generate' }
+      metadata: { recommendation_run_id: run.data.id, item_count: items.length }
     })
 
-    return res.status(200).json({ recommendations: data ?? recommendations, run })
-  } catch (e) {
+    return res.status(201).json({
+      run: run.data,
+      recommendations: inserted.data ?? items
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.issues[0]?.message ?? 'Invalid request.' })
+    }
     return res.status(500).json({ error: 'Server error' })
   }
 }

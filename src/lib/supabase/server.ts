@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import type { AppSession } from '@/lib/auth/session'
 
 function requireEnv(name: string) {
   const value = process.env[name]
@@ -20,6 +21,24 @@ export function createSupabaseServiceClient() {
     requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
     requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
     {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    }
+  )
+}
+
+export function createSupabaseUserClient(session: AppSession) {
+  return createClient(
+    requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
+    requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`
+        }
+      },
       auth: {
         autoRefreshToken: false,
         persistSession: false

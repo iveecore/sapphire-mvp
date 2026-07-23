@@ -14,3 +14,7 @@ export const loginSchema = z.object({
 export function formatZodError(error: z.ZodError) {
   return error.issues[0]?.message ?? 'Please check your details and try again.'
 }
+
+export const loginResponseSchema = z.object({
+  next: z.string().min(1).optional()
+})

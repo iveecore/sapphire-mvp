@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod'
-import { createSupabaseServiceClient } from '@/lib/supabase/server'
+import { createSupabaseAnonClient, createSupabaseServiceClient } from '@/lib/supabase/server'
 import { formatZodError, signupSchema } from '@/lib/validation/auth'
+import { setSessionCookie } from '@/lib/auth/session'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -29,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .from('users')
       .upsert({
         id: userId,
+        auth_user_id: userId,
         email,
         full_name: fullName ?? null,
         onboarding_status: 'draft',
@@ -70,6 +72,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         event_type: 'account_created',
         metadata: { source: 'signup' }
       })
+
+    const loginClient = createSupabaseAnonClient()
+    const login = await loginClient.auth.signInWithPassword({ email, password })
+
+    if (login.data.session) {
+      setSessionCookie(res, {
+        accessToken: login.data.session.access_token,
+        refreshToken: login.data.session.refresh_token,
+        userId,
+        email
+      })
+    }
 
     return res.status(201).json({ user: data.user, next: '/quiz' })
   } catch (e) {

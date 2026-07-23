@@ -30,6 +30,30 @@ create table profiles (
   updated_at timestamp default now()
 );
 
+create table body_profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade not null unique,
+  body_type text,
+  height_cm int,
+  bust_cm int,
+  waist_cm int,
+  hips_cm int,
+  size_top text,
+  size_bottom text,
+  size_shoes text,
+  fit_preferences jsonb default '{}'::jsonb,
+  created_at timestamp default now(),
+  updated_at timestamp default now()
+);
+
+create table brands (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  vibe text,
+  price_tier text,
+  created_at timestamp default now()
+);
+
 create table privacy_settings (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references users(id) on delete cascade not null unique,
@@ -155,6 +179,19 @@ create table products (
   price decimal(10,2),
   image_url text,
   category text,
+  brand_id uuid references brands(id) on delete set null,
+  size_chart jsonb default '{}'::jsonb,
+  fit_notes text,
+  created_at timestamp default now()
+);
+
+create table product_sizing (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid references products(id) on delete cascade not null,
+  size_label text not null,
+  body_type text,
+  fit_score int default 50,
+  notes text,
   created_at timestamp default now()
 );
 
@@ -218,6 +255,8 @@ create table achievements (
 alter table users enable row level security;
 alter table identities enable row level security;
 alter table profiles enable row level security;
+alter table body_profiles enable row level security;
+alter table brands enable row level security;
 alter table privacy_settings enable row level security;
 alter table permissions enable row level security;
 alter table audit_events enable row level security;
@@ -241,6 +280,8 @@ alter table achievements enable row level security;
 create policy "Users can see own data" on users for all using (auth.uid() = id);
 create policy "Users can see own identities" on identities for all using (auth.uid() = user_id);
 create policy "Users can see own profiles" on profiles for all using (auth.uid() = user_id);
+create policy "Users can see own body profiles" on body_profiles for all using (auth.uid() = user_id);
+create policy "Brands are public" on brands for select using (true);
 create policy "Users can see own privacy settings" on privacy_settings for all using (auth.uid() = user_id);
 create policy "Users can see own permissions" on permissions for all using (auth.uid() = user_id);
 create policy "Users can see own audit events" on audit_events for all using (auth.uid() = user_id);

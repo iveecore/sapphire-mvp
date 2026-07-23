@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod'
 import { createSupabaseAnonClient, createSupabaseServiceClient } from '@/lib/supabase/server'
 import { formatZodError, loginSchema } from '@/lib/validation/auth'
+import { setSessionCookie } from '@/lib/auth/session'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -32,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .from('users')
         .insert({
           id: data.user.id,
+          auth_user_id: data.user.id,
           email: data.user.email ?? email,
           full_name: data.user.user_metadata?.full_name ?? null,
           onboarding_status: 'draft',
@@ -62,6 +64,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         event_type: 'account_login',
         metadata: { source: 'login' }
       })
+
+    setSessionCookie(res, {
+      accessToken: data.session.access_token,
+      refreshToken: data.session.refresh_token,
+      userId: data.user.id,
+      email: data.user.email ?? email
+    })
 
     return res.status(200).json({ session: data.session, next })
   } catch (e) {
