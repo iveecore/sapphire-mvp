@@ -77,3 +77,8 @@ export function clearSessionCookie(res: NextApiResponse) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
   res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; Path=/; SameSite=Lax${secure}; Max-Age=0`)
 }
+
+export function getServerSession(cookieValue: string | undefined): AppSession | null {
+  if (!cookieValue) return null
+  return decodeSessionValue(cookieValue, requireEnv('SESSION_SECRET'))
+}
